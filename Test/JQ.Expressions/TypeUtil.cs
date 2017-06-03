@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace JQ.Expressions
@@ -12,129 +13,68 @@ namespace JQ.Expressions
     /// </summary>
     public static class TypeUtil
     {
+        private static Dictionary<RuntimeTypeHandle, DbType> _typeMap;
+        static TypeUtil()
+        {
+            _typeMap = new Dictionary<RuntimeTypeHandle, DbType>
+            {
+                [typeof(byte).TypeHandle] = DbType.Byte,
+                [typeof(sbyte).TypeHandle] = DbType.SByte,
+                [typeof(short).TypeHandle] = DbType.Int16,
+                [typeof(ushort).TypeHandle] = DbType.UInt16,
+                [typeof(int).TypeHandle] = DbType.Int32,
+                [typeof(uint).TypeHandle] = DbType.UInt32,
+                [typeof(long).TypeHandle] = DbType.Int64,
+                [typeof(ulong).TypeHandle] = DbType.UInt64,
+                [typeof(float).TypeHandle] = DbType.Single,
+                [typeof(double).TypeHandle] = DbType.Double,
+                [typeof(decimal).TypeHandle] = DbType.Decimal,
+                [typeof(bool).TypeHandle] = DbType.Boolean,
+                [typeof(string).TypeHandle] = DbType.String,
+                [typeof(char).TypeHandle] = DbType.StringFixedLength,
+                [typeof(Guid).TypeHandle] = DbType.Guid,
+                [typeof(DateTime).TypeHandle] = DbType.DateTime,
+                [typeof(DateTimeOffset).TypeHandle] = DbType.DateTimeOffset,
+                [typeof(TimeSpan).TypeHandle] = DbType.Time,
+                [typeof(byte[]).TypeHandle] = DbType.Binary,
+                [typeof(byte?).TypeHandle] = DbType.Byte,
+                [typeof(sbyte?).TypeHandle] = DbType.SByte,
+                [typeof(short?).TypeHandle] = DbType.Int16,
+                [typeof(ushort?).TypeHandle] = DbType.UInt16,
+                [typeof(int?).TypeHandle] = DbType.Int32,
+                [typeof(uint?).TypeHandle] = DbType.UInt32,
+                [typeof(long?).TypeHandle] = DbType.Int64,
+                [typeof(ulong?).TypeHandle] = DbType.UInt64,
+                [typeof(float?).TypeHandle] = DbType.Single,
+                [typeof(double?).TypeHandle] = DbType.Double,
+                [typeof(decimal?).TypeHandle] = DbType.Decimal,
+                [typeof(bool?).TypeHandle] = DbType.Boolean,
+                [typeof(char?).TypeHandle] = DbType.StringFixedLength,
+                [typeof(Guid?).TypeHandle] = DbType.Guid,
+                [typeof(DateTime?).TypeHandle] = DbType.DateTime,
+                [typeof(DateTimeOffset?).TypeHandle] = DbType.DateTimeOffset,
+                [typeof(TimeSpan?).TypeHandle] = DbType.Time,
+                [typeof(object).TypeHandle] = DbType.Object
+            };
+        }
+
         #region 根据类型对应类型获取对应数据库对应的类型
 
         /// <summary>
         /// 根据类型对应类型获取对应数据库对应的类型
         /// </summary>
-        /// <param name="infoTypeString">类型类型</param>
+        /// <param name="type">类型</param>
         /// <returns>数据库对应的类型</returns>
-        public static SqlDbType TypeString2SqlType(string infoTypeString)
+        public static DbType Type2DbType(Type type)
         {
-            SqlDbType dbType = SqlDbType.Variant;//默认为Object
-
-            switch (infoTypeString)
+            if (_typeMap.ContainsKey(type.TypeHandle))
             {
-                case "int16":
-                case "int32":
-                    dbType = SqlDbType.Int;
-                    break;
-
-                case "string":
-                case "varchar":
-                    dbType = SqlDbType.NVarChar;
-                    break;
-
-                case "boolean":
-                case "bool":
-                case "bit":
-                    dbType = SqlDbType.Bit;
-                    break;
-
-                case "datetime":
-                    dbType = SqlDbType.DateTime;
-                    break;
-
-                case "decimal":
-                    dbType = SqlDbType.Decimal;
-                    break;
-
-                case "float":
-                    dbType = SqlDbType.Float;
-                    break;
-
-                case "image":
-                    dbType = SqlDbType.Image;
-                    break;
-
-                case "money":
-                    dbType = SqlDbType.Money;
-                    break;
-
-                case "ntext":
-                    dbType = SqlDbType.NText;
-                    break;
-
-                case "nvarchar":
-                    dbType = SqlDbType.NVarChar;
-                    break;
-
-                case "smalldatetime":
-                    dbType = SqlDbType.SmallDateTime;
-                    break;
-
-                case "smallint":
-                    dbType = SqlDbType.SmallInt;
-                    break;
-
-                case "text":
-                    dbType = SqlDbType.Text;
-                    break;
-
-                case "int64":
-                case "bigint":
-                    dbType = SqlDbType.BigInt;
-                    break;
-
-                case "binary":
-                    dbType = SqlDbType.Binary;
-                    break;
-
-                case "char":
-                    dbType = SqlDbType.Char;
-                    break;
-
-                case "nchar":
-                    dbType = SqlDbType.NChar;
-                    break;
-
-                case "numeric":
-                    dbType = SqlDbType.Decimal;
-                    break;
-
-                case "real":
-                    dbType = SqlDbType.Real;
-                    break;
-
-                case "smallmoney":
-                    dbType = SqlDbType.SmallMoney;
-                    break;
-
-                case "sql_variant":
-                    dbType = SqlDbType.Variant;
-                    break;
-
-                case "timestamp":
-                    dbType = SqlDbType.Timestamp;
-                    break;
-
-                case "tinyint":
-                    dbType = SqlDbType.TinyInt;
-                    break;
-
-                case "uniqueidentifier":
-                    dbType = SqlDbType.UniqueIdentifier;
-                    break;
-
-                case "varbinary":
-                    dbType = SqlDbType.VarBinary;
-                    break;
-
-                case "xml":
-                    dbType = SqlDbType.Xml;
-                    break;
+                return _typeMap[type.TypeHandle];
             }
-            return dbType;
+            else
+            {
+                return DbType.Object;
+            }
         }
 
         #endregion 根据类型对应类型获取对应数据库对应的类型

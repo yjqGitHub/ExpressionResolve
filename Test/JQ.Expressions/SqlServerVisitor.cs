@@ -30,7 +30,7 @@ namespace JQ.Expressions
             return Tuple.Create(parameterName, new SqlParameter
             {
                 Value = value,
-                SqlDbType = TypeUtil.TypeString2SqlType(value.GetType().Name.ToLower()),
+                DbType = TypeUtil.Type2DbType(value.GetType()),
                 ParameterName = parameterName
             });
         }

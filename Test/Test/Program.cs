@@ -47,7 +47,7 @@ namespace Test
             {
                 foreach (var item in sqlMember.Item2)
                 {
-                    Console.WriteLine($"{item?.ParameterName},{item?.Value}");
+                    Console.WriteLine($"{item?.ParameterName},{item?.Value},{item?.SqlDbType}");
                 }
             }
 
